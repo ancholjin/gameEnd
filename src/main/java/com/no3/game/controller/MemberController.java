@@ -4,7 +4,8 @@ import com.no3.game.dto.MemberJoinDto;
 import com.no3.game.entity.Member;
 import com.no3.game.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,7 +20,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberService memberService;
+/*    private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping(value = "/new")
@@ -55,5 +56,5 @@ public class MemberController {
     public String loginError(Model model){
         model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요");
         return "/member/memberLoginForm";
-    }
+    }*/
 }

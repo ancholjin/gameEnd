@@ -28,5 +28,8 @@ public class ItemImg extends BaseEntity{
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Review review;//추가
+
 
 }
