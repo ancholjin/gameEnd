@@ -20,12 +20,13 @@ public class MemberRepoTest {
     private ReviewRepository reviewRepository;
 
 
-/*
+
     @Test
     public void insertMembers() {
 
         IntStream.rangeClosed(1,5).forEach(i -> {
             Member member = Member.builder()
+                    .id(1L)
                     .email("a"+i +"@naver.com")
                     .password("1234")
                     .name("test"+i)
@@ -35,7 +36,7 @@ public class MemberRepoTest {
         }); // USER insert test
 
     }
-*/
+
 
 
     @Commit

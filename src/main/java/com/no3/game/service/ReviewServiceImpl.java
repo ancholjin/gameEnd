@@ -3,7 +3,11 @@ package com.no3.game.service;
 import com.no3.game.dto.PageRequestDTO;
 import com.no3.game.dto.PageResultDTO;
 import com.no3.game.dto.ReviewDTO;
+import com.no3.game.entity.Item;
+import com.no3.game.entity.Member;
 import com.no3.game.entity.Review;
+import com.no3.game.repository.ItemRepository;
+import com.no3.game.repository.MemberRepository;
 import com.no3.game.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,12 +28,29 @@ import java.util.function.Function;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final ItemRepository itemRepository;
+    private final MemberRepository memberRepository;
+
 
 
     @Override
     public Long register(ReviewDTO reviewDTO) {
 
-        Review review = dtoToEntity(reviewDTO);
+
+        Item item = itemRepository.findByTitle(reviewDTO.getItemTitle())
+                .orElseThrow(() -> new IllegalArgumentException("No item found with title: " + reviewDTO.getItemTitle()));
+
+        Member member = memberRepository.findByEmail(reviewDTO.getWriterEmail())
+                .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + reviewDTO.getWriterEmail()));
+
+        Review review = Review.builder()
+                .id(reviewDTO.getId())
+                .text(reviewDTO.getText())
+                .grade(reviewDTO.getGrade())
+                .item(item)
+                .member(member)
+                .build();
+
 
         reviewRepository.save(review);
 
@@ -44,9 +65,11 @@ public class ReviewServiceImpl implements ReviewService {
 
         if(result.isPresent()){
             return entityToDTO(result.get());
-        }
+       }
         return null;
     }
+
+
 
 
     @Override

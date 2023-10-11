@@ -5,8 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item,Long > {
 
@@ -25,4 +27,6 @@ public interface ItemRepository extends JpaRepository<Item,Long > {
             " left outer join Review r on r.item = i "+
             " where i.id = :id group by ii")
     List<Object[]> getItemWithAll(Long id); // 특정 아이템 조회
+
+    Optional<Item> findByTitle(@Param("title") String title);
 }

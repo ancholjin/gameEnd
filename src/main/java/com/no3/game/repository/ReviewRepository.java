@@ -5,6 +5,7 @@ import com.no3.game.entity.Member;
 import com.no3.game.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -27,5 +28,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> ,
     @EntityGraph(attributePaths = "imgs" , type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT i FROM Review i ")
     Page<Review> getList(PageRequest pageRequest);
+
+    @Query(value ="SELECT r, m, i FROM Review r LEFT JOIN r.member m LEFT JOIN r.item i ")
+    Page<Object[]> getReviewWithAll(Pageable pageable);
 
 }

@@ -1,12 +1,12 @@
 package com.no3.game.service;
 
-
-
 import com.no3.game.dto.ItemImgDTO;
 import com.no3.game.dto.PageRequestDTO;
 import com.no3.game.dto.PageResultDTO;
 import com.no3.game.dto.ReviewDTO;
+import com.no3.game.entity.Item;
 import com.no3.game.entity.ItemImg;
+import com.no3.game.entity.Member;
 import com.no3.game.entity.Review;
 
 import java.util.ArrayList;
@@ -26,10 +26,19 @@ public interface ReviewService {
 
     default Review dtoToEntity(ReviewDTO reviewDTO){
 
+        Item item = Item.builder()
+                .title(reviewDTO.getItemTitle())
+                .build();
+        Member member = Member.builder()
+                .email(reviewDTO.getWriterEmail())
+                .build();
+
         Review review = Review.builder()
                 .id(reviewDTO.getId())
                 .text(reviewDTO.getText())
                 .grade(reviewDTO.getGrade())
+                .item(item)
+                .member(member)
                 .imgs(new HashSet<>())
                 .build();
 
@@ -80,6 +89,21 @@ public interface ReviewService {
         return dto;
     }
 
+    default ReviewDTO entityToDTO(Review review, Member member, Item item) {
+
+        ReviewDTO reviewDTO = ReviewDTO.builder()
+                .id(review.getId())
+                .itemTitle(item.getTitle())
+                .text(review.getText())
+                .regDate(review.getRegDate())
+                .modDate(review.getModDate())
+                .writerEmail(member.getEmail())
+                .writerName(member.getName())
+                .build();
+
+        return reviewDTO;
+
+    }
 
 
 }

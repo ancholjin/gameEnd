@@ -20,11 +20,13 @@ public class ReviewDTO {
 
     private int grade;
 
+    private String itemTitle; // 아이템 이름
+    private String writerEmail; // 작성자의 이메일
+    private String writerName; // 작성자의 이름
+
     private LocalDateTime regDate,modDate;
 
     private ArrayList<ItemImgDTO> img;
-
-
 
 
 }

@@ -35,19 +35,19 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-/*
-   public static Member createMember(MemberJoinDto memberJoinDto, PasswordEncoder passwordEncoder){
+
+   public static Member createMember(MemberJoinDto memberJoinDto){/*, PasswordEncoder passwordEncoder*/
 
         Member member = Member.builder()
                 .name(memberJoinDto.getName())
                 .email(memberJoinDto.getEmail())
-                .password( passwordEncoder.encode( memberJoinDto.getPassword() ) ) // BCryptPasswordEncoder Bean 을 파라미터로 넘겨서 비번을 암호화함
+                .password(memberJoinDto.getPassword())  /*passwordEncoder.encode( memberJoinDto.getPassword() ) */// BCryptPasswordEncoder Bean 을 파라미터로 넘겨서 비번을 암호화함
                 .role(Role.USER)  // 유저
 //                .role(Role.ADMIN)   // 관리자
                 .build();
 
         return member;
     }
-*/
+
 
 }
