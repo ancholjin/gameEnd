@@ -1,238 +1,109 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
 
-<th:block th:replace="~{/layout/basic :: setContent(~{this::content} )}">
+<div layout:fragment="content">
 
-  <th:block th:fragment="content">
+  <h1 class="mt-4">Review Modify Test Page</h1>
 
-    <h1 class="mt-4">Review Modify Page</h1>
+  <form action="/review/modify" method="post">
 
-    <form th:action="@{/review/modify}" th:method="post"  >
-      <input type="hidden" name="page" th:value="${requestDTO.page}">
-      <div class="form-group">
-        <label >ID</label>
-        <input type="text" class="form-control" name="id" th:value="${dto.id}" readonly >
-      </div>
-      <div class="form-group">
-        <label >Content</label>
-        <textarea class="form-control" rows="5" name="content">[[${dto.content}]]</textarea>
-        <div class="custom-file">
-          <input type="file"  class="custom-file-input files" id="fileInput" multiple>
-          <label class="custom-file-label" data-browse="Browse">Photo</label>
-        </div>
-      </div>
-      <div class="form-group">
-        <label >Writer</label>
-        <input type="text" class="form-control" name="id" th:value="${dto.id}" readonly >
-      </div>
-      <div class="form-group">
-        <label >RegDate</label>
-        <input type="text" class="form-control"
-               th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
-      </div>
-      <div class="form-group">
-        <label >ModDate</label>
-        <input type="text" class="form-control"
-               th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
-      </div>
+    <!--페이지 번호  -->
+    <input type="hidden" name="page" th:value="${requestDTO.page}">
+    <input type="hidden" name="type" th:value="${requestDTO.type}" >
+    <input type="hidden" name="keyword" th:value="${requestDTO.keyword}" >
 
-      <a th:href="@{/review/list(page=${requestDTO.page})}">
-        <button type="button" class="btn btn-info">List</button>
-      </a>
-      <button type="button" class="btn btn-primary">Modify</button>
-      <button type="button" class="btn btn-danger">Delete</button>
 
-    </form>
-
-    <style>
-        .uploadResult {
-            width: 100%;
-            background-color: gray;
-            margin-top: 10px;
-        }
-
-        .uploadResult ul {
-            display: flex;
-            flex-flow: row;
-            justify-content: center;
-            align-items: center;
-            vertical-align: top;
-
-        }
-
-        .uploadResult ul li {
-            list-style: none;
-            padding: 10px;
-            margin-left: 2em;
-        }
-
-        .uploadResult ul li img {
-            width: 100px;
-        }
-    </style>
-
-    <div class="uploadResult" >
-      <ul >
-        <li th:if="${dto.imgs}" th:each="photo: ${dto.imgs}" th:data-path="${photo.path}"
-            th:data-uuid="${ItemImg.uuid}"
-            th:data-name="${ItemImg.imgName}"
-            th:data-pnum="${ItemImg.id}">
-          <div>
-            <button type='button' th:data-file="${ItemImg.getThumbnailURL()}" class='btn-warning btn-sm'>X</button><br>
-            <img th:src=|/display?imgName=${ItemImg.getThumbnailURL()}|>
-          </div>
-        </li>
-      </ul>
+    <div class="form-group">
+      <label >rno</label>
+      <input type="text" class="form-control" name="review_id" th:value="${dto.id}" readonly >
     </div>
 
+    <div class="form-group">
+      <label >grade</label>
+      <input type="text" class="form-control" name="grade" th:value="${dto.grade}" >
+    </div>
 
+    <div class="form-group">
+      <label>Title</label>
+      <input type="text" class="form-control" name="title" th:value="${dto.itemTitle}" readonly >
+    </div>
+    <div class="form-group">
+      <label >Content</label>
+      <textarea class="form-control" rows="5" name="text">[[${dto.text}]]</textarea>
+    </div>
+    <div class="form-group">
+      <label >Writer</label>
+      <input type="text" class="form-control" name="writer" th:value="${dto.writerName}" readonly>
+    </div>
+    <div class="form-group">
+      <label >RegDate</label>
+      <input type="text" class="form-control" th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+    </div>
+    <div class="form-group">
+      <label >ModDate</label>
+      <input type="text" class="form-control" th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+    </div>
 
-    <script th:inline="javascript">
-    $(document).ready(function() {
+  </form>
 
-        console.log("...................1")
+  <button type="button" class="btn btn-primary modifyBtn">Modify</button>
 
-      $('form .btn-danger').click(function (e) {
+  <button type="button" class="btn btn-info listBtn">List</button>
 
-          e.preventDefault();
+  <button type="button" class="btn btn-danger removeBtn">Remove</button>
 
-          console.log("................")
+  <script th:inline="javascript">
 
-          if (confirm("삭제하시겠습니까?")) {
+    var actionForm = $("form"); //form 태그 객체
 
-              $("form").attr("action", "/review/remove").submit();
+    $(".removeBtn").click(function(){
 
-              return;
+      actionForm
+              .attr("action", "/review/remove")
+              .attr("method","post");
 
-          }
-
-          return false;
-      });
-
-
-      $(".uploadResult ").on("click", "li button", function(e){
-
-          if(!confirm("파일을 삭제하면 반드시 Modify버튼을 통해서 저장하세요")){
-              return false;
-          }
-
-          var targetFile = $(this).data("file");
-
-          console.log("delete file: " + targetFile);
-
-          var targetLi = $(this).closest("li");
-
-          $.ajax({
-              url: '/deleteFile',
-              data: {fileName: targetFile},
-              dataType:'text',
-              type: 'POST',
-              success: function(result){
-                  alert(result);
-
-                  targetLi.remove();
-              }
-          }); //$.ajax
-
-      });
-
-      //첨부 이미지 추가
-        $(".custom-file-input").on("change", function() {
-            var fileName = $(this).val().split("\\").pop();
-            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-
-            var formData = new FormData();
-
-            var inputFile = $("input[type='file']");
-
-            var files = inputFile[0].files;
-
-            var appended = false;
-            for (var i = 0; i < files.length; i++) {
-                console.log(files[i]);
-                formData.append("uploadFiles", files[i]);
-                appended = true;
-            }
-
-            //upload를 하지 않는다.
-            if (!appended) {return;}
-
-            for (var value of formData.values()) {
-                console.log(value);
-            }
-
-            //실제 업로드 부분
-            //upload ajax
-            $.ajax({
-                url: '/uploadAjax',
-                processData: false,
-                contentType: false,
-                data: formData,
-                type: 'POST',
-                dataType:'json',
-                success: function(result){
-                    console.log(result);
-                    //나중에 화면 처리
-                    showResult(result);
-                },
-                error: function(jqXHR, textStatus, errorThrown){
-                    console.log(textStatus);
-                }
-
-            }); //$.ajax
-
-        });
-
-        function showResult(uploadResultArr){
-
-            var uploadUL = $(".uploadResult ul");
-
-            var str ="";
-
-            $(uploadResultArr).each(function(i, obj) {
-
-                str += "<li data-name='"+obj.fileName+"' ";
-                str += "data-path='"+obj.uploadPath+"' " ;
-                str += "data-uuid='"+obj.uuid+"' >";
-                str + " <div>";
-                str += "<button type='button' data-file=\'" + obj.thumbnailURL + "\' "
-                str += "class='btn-warning btn-sm'>X</button><br>";
-                str += "<img src='/display?fileName=" + obj.thumbnailURL + "'>";
-                str += "</div>";
-                str + "</li>";
-            });
-
-            uploadUL.append(str);
-        }
-
-        //<form>태그 submit처리
-        //prevent submit
-        $(".btn-primary").on("click", function(e) {
-
-            e.preventDefault();
-
-            alert("modify........");
-
-            var str = "";
-            $(".uploadResult li").each(function(i,obj){
-                var target = $(obj);
-
-                var pnum = target.data("pnum");
-
-                if(pnum){
-                    str += "<input type='hidden' name='photos["+i+"].pnum' value='"+pnum+"'>";
-                }
-                str += "<input type='hidden' name='photos["+i+"].uuid' value='"+target.data("uuid")+"'>";
-                str += "<input type='hidden' name='photos["+i+"].fileName' value='"+target.data("name")+"'>";
-                str += "<input type='hidden' name='photos["+i+"].uploadPath' value='"+target.data("path")+"'>";
-            });
-
-            $("form").append(str).submit();
-        });
+      actionForm.submit();
 
     });
+
+    $(".modifyBtn").click(function() {
+
+      if(!confirm("수정하시겠습니까?")){
+        return ;
+      }
+
+      actionForm
+              .attr("action", "/review/modify")
+              .attr("method","post")
+              .submit();
+    });
+
+    $(".listBtn").click(function() {
+
+      //var pageInfo = $("input[name='page']");
+      var page = $("input[name='page']");
+      var type = $("input[name='type']");
+      var keyword = $("input[name='keyword']");
+
+      actionForm.empty(); //form 태그의 모든 내용을 지우고
+
+      actionForm.append(page);
+      actionForm.append(type);
+      actionForm.append(keyword);
+
+
+      actionForm
+              .attr("action", "/review/list")
+              .attr("method","get");
+
+      actionForm.submit();
+
+    })
+
   </script>
 
-    </th:block>
+</div>
 
-</th:block>
+</html>

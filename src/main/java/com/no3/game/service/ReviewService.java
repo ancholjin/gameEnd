@@ -1,109 +1,50 @@
 package com.no3.game.service;
 
-import com.no3.game.dto.ItemImgDTO;
 import com.no3.game.dto.PageRequestDTO;
 import com.no3.game.dto.PageResultDTO;
-import com.no3.game.dto.ReviewDTO;
+import com.no3.game.dto.ReviewDto;
 import com.no3.game.entity.Item;
-import com.no3.game.entity.ItemImg;
 import com.no3.game.entity.Member;
 import com.no3.game.entity.Review;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
 public interface ReviewService {
 
-    Long register(ReviewDTO reviewDTO);
+    Long register(ReviewDto dto); // 리뷰 작성
 
-    ReviewDTO get(Long id);
+    PageResultDTO<ReviewDto, Object[]> getList(PageRequestDTO pageRequestDTO);
 
-    PageResultDTO<ReviewDTO, Review> getList(PageRequestDTO pageRequestDTO);
+    ReviewDto get(Long id);
+    void modify(ReviewDto reviewDto);
 
-    void remove(Long id);
+    default Review dtoToEntity(ReviewDto dto) {
 
-    Long modify(ReviewDTO reviewDTO);
-
-    default Review dtoToEntity(ReviewDTO reviewDTO){
-
-        Item item = Item.builder()
-                .title(reviewDTO.getItemTitle())
-                .build();
-        Member member = Member.builder()
-                .email(reviewDTO.getWriterEmail())
-                .build();
+        Item item = Item.builder().title(dto.getItemNm()).build();
+        Member member = Member.builder().email(dto.getWriterEmail()).build();
 
         Review review = Review.builder()
-                .id(reviewDTO.getId())
-                .text(reviewDTO.getText())
-                .grade(reviewDTO.getGrade())
+                .id(dto.getId())
+                .text(dto.getText())
+                .grade(dto.getGrade())
                 .item(item)
                 .member(member)
-                .imgs(new HashSet<>())
                 .build();
-
-        ArrayList<ItemImgDTO> itemImgDTOList = reviewDTO.getImg();
-
-        if(itemImgDTOList != null && itemImgDTOList.size() > 0){
-
-            for (ItemImgDTO itemImgDTO : itemImgDTOList) {
-                ItemImg itemImg = ItemImg.builder()
-                        .id(itemImgDTO.getId())
-                        .imgName(itemImgDTO.getImgName())
-                        .uuid(itemImgDTO.getUuid())
-                        .review(review)
-                        .path(itemImgDTO.getPath()).build();
-
-                review.addPhoto(itemImg);
-            }
-        }
         return review;
     }
 
-    default ReviewDTO entityToDTO(Review review) {
+    default ReviewDto entityToDTO(Review review, Member member, Item item) {
 
-        ReviewDTO dto = ReviewDTO.builder()
+        ReviewDto reviewDto = ReviewDto.builder()
                 .id(review.getId())
+                .itemNm(item.getTitle())
                 .text(review.getText())
-                .grade(review.getGrade())
-                .regDate(review.getRegDate())
-                .modDate(review.getModDate())
-                .build();
-
-        if (review.getImgs() != null && review.getImgs().size() > 0) {
-
-            ArrayList<ItemImgDTO> itemImgDTOArrayList = new ArrayList<>();
-
-            review.getImgs().stream().sorted((p1, p2) -> p1.getId() > p2.getId() ? -1 : 1)
-                    .forEach(photo -> {
-
-                        itemImgDTOArrayList.add(
-                                ItemImgDTO.builder().id(photo.getId())
-                                        .imgName(photo.getImgName())
-                                        .uuid(photo.getUuid())
-                                        .path(photo.getPath())
-                                        .build());
-                    });
-            dto.setImg(itemImgDTOArrayList);
-        }
-        return dto;
-    }
-
-    default ReviewDTO entityToDTO(Review review, Member member, Item item) {
-
-        ReviewDTO reviewDTO = ReviewDTO.builder()
-                .id(review.getId())
-                .itemTitle(item.getTitle())
-                .text(review.getText())
-                .regDate(review.getRegDate())
-                .modDate(review.getModDate())
+                .regTime(review.getRegTime())
+                .updateTime(review.getUpdateTime())
                 .writerEmail(member.getEmail())
                 .writerName(member.getName())
                 .build();
 
-        return reviewDTO;
+        return reviewDto;
 
     }
-
 
 }

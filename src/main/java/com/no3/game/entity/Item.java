@@ -1,5 +1,6 @@
 package com.no3.game.entity;
 
+import com.no3.game.dto.ItemFormDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,7 +21,7 @@ public class Item extends BaseEntity {
     @Id
     @Column(name="item_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;      // 상품 코드
+    private Long id;
 
     @Column(nullable = false, length = 50) // not null 설정 및 길이 지정, nullable = false : not null
     private String title; //상품명
@@ -43,5 +44,11 @@ public class Item extends BaseEntity {
     @Enumerated(EnumType.STRING)  // enum 타입 매핑
     private ItemSellStatus itemSellStatus; //상품 판매 상태
 
+    public void updateItem(ItemFormDto itemFormDto){
+        this.title = itemFormDto.getItemNm();
+        this.price = itemFormDto.getPrice();
+        this.detail = itemFormDto.getItemDetail();
+        this.itemSellStatus = itemFormDto.getItemSellStatus();
+    }
 
 }
