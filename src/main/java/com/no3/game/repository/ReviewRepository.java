@@ -1,8 +1,6 @@
 package com.no3.game.repository;
 
-import com.no3.game.entity.Item;
-import com.no3.game.entity.Member;
-import com.no3.game.entity.Review;
+import com.no3.game.entity.*;
 import com.no3.game.repository.search.SearchReviewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,4 +28,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, SearchRev
 
     @Query(value ="SELECT r, m, i FROM Review r LEFT JOIN r.member m LEFT JOIN r.item i WHERE r.id = :id")
     Object getReviewById(@Param("id") Long id);
+
 }

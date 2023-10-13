@@ -1,4 +1,4 @@
-package com.no3.game.controller;
+package com.no3.game.neww.controllerr;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

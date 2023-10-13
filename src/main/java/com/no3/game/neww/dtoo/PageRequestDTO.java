@@ -1,4 +1,4 @@
-package com.no3.game.dto;
+package com.no3.game.neww.dtoo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
